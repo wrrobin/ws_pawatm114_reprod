@@ -1,0 +1,17 @@
+diff --git a/src/ishmem/copy.h b/src/ishmem/copy.h
+index abce2e3..f6870b1 100644
+--- a/src/ishmem/copy.h
++++ b/src/ishmem/copy.h
+@@ -20,8 +20,8 @@
+  *
+  * TODO: Allow for runtime-configurable cutovers
+  */
+-#define CUTOVER_PRODUCTION 0
+-#define CUTOVER_ALWAYS     0
+-#define CUTOVER_NEVER      1
++#define CUTOVER_PRODUCTION 0
++#define CUTOVER_ALWAYS     1
++#define CUTOVER_NEVER      0
+ 
+ #if CUTOVER_NEVER
+

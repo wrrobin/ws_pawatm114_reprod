@@ -1,0 +1,64 @@
+diff --git a/src/collectives/collect_impl.h b/src/collectives/collect_impl.h
+index dbf85a2..263b74b 100644
+--- a/src/collectives/collect_impl.h
++++ b/src/collectives/collect_impl.h
+@@ -32,7 +32,7 @@ int ishmem_collect(T *dest, const T *src, size_t nelems)
+             for (size_t local_pe = 0; local_pe < info->n_local_pes; local_pe += 1) {
+                 total_nelems += info->collect_nelems[local_pe];
+             }
+-            size_t total_nbytes = sizeof(T) * total_nelems;
++            size_t total_nbytes __attribute__((unused)) = sizeof(T) * total_nelems;
+             if (!ISHMEM_COLLECT_CUTOVER) {
+                 if constexpr (enable_error_checking) {
+                     validate_parameters((void *) dest, (void *) src, sizeof(T) * total_nelems,
+@@ -126,7 +126,7 @@ int ishmem_collect(ishmem_team_t team, T *dest, const T *src, size_t nelems)
+             for (int pe = 0; pe < myteam->size; pe += 1) {
+                 total_nelems += myteam->collect_nelems[pe];
+             }
+-            size_t total_nbytes = sizeof(T) * total_nelems;
++            size_t total_nbytes __attribute__((unused)) = sizeof(T) * total_nelems;
+             if (!ISHMEM_COLLECT_CUTOVER) {
+                 if constexpr (enable_error_checking) {
+                     validate_parameters((void *) dest, (void *) src, sizeof(T) * total_nelems,
+@@ -234,7 +234,7 @@ int ishmemx_collect_work_group(T *dest, const T *src, size_t nelems, const Group
+                 total_nelems += info->collect_nelems[pe];
+             }
+             /* This copy of total_nbytes is available to all threads */
+-            size_t total_nbytes = total_nelems * sizeof(T);
++            size_t total_nbytes __attribute__((unused)) = total_nelems * sizeof(T);
+             if (!ISHMEM_COLLECT_GROUP_CUTOVER) {
+                 /* now sum all the lower numbered pe nelems to compute where our data will go
+                  */
+@@ -316,7 +316,7 @@ int ishmemx_collect_work_group(ishmem_team_t team, T *dest, const T *src, size_t
+                 total_nelems += myteam->collect_nelems[pe];
+             }
+             /* This copy of total_nbytes is available to all threads */
+-            size_t total_nbytes = total_nelems * sizeof(T);
++            size_t total_nbytes __attribute__((unused)) = total_nelems * sizeof(T);
+             if (!ISHMEM_COLLECT_GROUP_CUTOVER) {
+                 /* now sum all the lower numbered pe nelems to compute where our data will go
+                  */
+diff --git a/src/ishmem/copy.h b/src/ishmem/copy.h
+index abce2e3..069e59f 100644
+--- a/src/ishmem/copy.h
++++ b/src/ishmem/copy.h
+@@ -57,7 +57,7 @@
+ #else /* CUTOVER_PRODUCTION */
+ 
+ #define ISHMEM_RMA_CUTOVER               (nbytes >= 16384L)
+-#define ISHMEM_RMA_GROUP_CUTOVER         (nbytes >= 32768L)
++#define ISHMEM_RMA_GROUP_CUTOVER         (nbytes >= 16384L * (grp.get_local_linear_range() < 4 ? 1 : (grp.get_local_linear_range() > 128 ? 2 : log2(grp.get_local_linear_range()))))
+ #define ISHMEM_STRIDED_RMA_CUTOVER       (nbytes >= 16384L)
+ #define ISHMEM_STRIDED_RMA_GROUP_CUTOVER (nbytes >= 32768L)
+ #define ISHMEM_ALLTOALL_CUTOVER          (nbytes >= 128L)
+@@ -65,8 +65,8 @@
+ #define ISHMEM_BROADCAST_CUTOVER         ((nbytes * ((size_t) info->n_pes)) >= 8192L)
+ // preferred BROADCAST_GROUP_CUTOVER is nbytes * threads > 512
+ #define ISHMEM_BROADCAST_GROUP_CUTOVER   (nbytes >= 65536L)
+-#define ISHMEM_FCOLLECT_CUTOVER          (nbytes >= 1024L)
+-#define ISHMEM_FCOLLECT_GROUP_CUTOVER    (nbytes >= 32768L)
++#define ISHMEM_FCOLLECT_CUTOVER          ((nbytes * ((size_t) info->n_pes)) >= 8192L)
++#define ISHMEM_FCOLLECT_GROUP_CUTOVER    (nbytes >= 4096L * (grp.get_local_linear_range() < 4 ? 1 : log2(grp.get_local_linear_range())))
+ #define ISHMEM_COLLECT_CUTOVER           (total_nbytes >= (1024L * ((size_t) info->n_pes)))
+ #define ISHMEM_COLLECT_GROUP_CUTOVER     (total_nbytes >= (32768L * ((size_t) info->n_pes)))
+ 
