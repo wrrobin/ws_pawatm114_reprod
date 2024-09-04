@@ -26,5 +26,5 @@ cat tmp_1 | awk {'printf("%lf\n", $27)'} > tmp_t128
 mpiexec -n 3 $ISHMEM_BUILD_DIR/../scripts/ishmrun $ISHMEM_BUILD_DIR/test/performance/put_bw -m 4194304 | grep 'test put_bw' | grep 'group<1>' | grep 'threads 1024 ' > tmp_1
 cat tmp_1 | awk {'printf("%lf\n", $27)'} > tmp_t1024
 
-paste tmp_t1 tmp_t16 tmp_t128 tmp_t1024 > ishmem_cutover_always
+paste tmp_t1 tmp_t16 tmp_t128 tmp_t1024 > ishmem_put_cutover_always
 
