@@ -41,3 +41,6 @@ mpiexec -n 3 $ISHMEM_BUILD_DIR/../scripts/ishmrun $ISHMEM_BUILD_DIR/test/perform
 cat tmp_1 | awk {'printf("%lf\n", $24)'} > tmp_t1024
 
 paste tmp_t1 tmp_t16 tmp_t128 tmp_t1024 > ishmem_put_wg_lat
+
+rm ./tmp*
+

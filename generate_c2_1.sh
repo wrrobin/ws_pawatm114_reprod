@@ -29,3 +29,4 @@ cat tmp_1 | awk {'printf("%lf\n", $27)'} > tmp_t1024
 
 paste tmp_t1 tmp_t16 tmp_t128 tmp_t1024 > ishmem_put_cutover_never
 
+rm ./tmp*
