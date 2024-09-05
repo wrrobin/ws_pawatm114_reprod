@@ -6,6 +6,14 @@ export FI_PROVIDER=cxi
 export FI_CXI_OPTIMIZED_MRS=0
 export EnableImplicitScaling=0
 
+# Please build first with the appropriate patch as shown below
+## cd $ISHMEM_BUILD_DIR/..
+## git apply ishmem_cutover_always.patch
+## git apply ishmem_cutover_current.patch
+## cd $ISHMEM_BUILD_DIR
+## make -j
+#
+
 #fcollect
 mpiexec -n 12 $ISHMEM_BUILD_DIR/../scripts/ishmrun $ISHMEM_BUILD_DIR/test/performance/fcollect_bw -w 1024 | grep 'test fcollect_bw' | grep 'group' | grep 'threads 16' > tmp
 cat tmp | awk {'printf("%ld\t%lf\n", $20, $24)'} > tmp_t16
