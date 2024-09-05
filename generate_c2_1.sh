@@ -16,7 +16,7 @@ export EnableImplicitScaling=0
 #
 
 mpiexec -n 3 $ISHMEM_BUILD_DIR/../scripts/ishmrun $ISHMEM_BUILD_DIR/test/performance/put_bw -m 4194304 | grep 'test put_bw' | grep 'group<1>' | grep 'threads 1 ' > tmp_1
-cat tmp_1 | awk {'printf("%ld\t%lf\n", $20, $27)'} > tmp_t1
+cat tmp_1 | awk {'printf("%ld\t%lf\n", 8 * $20, $27)'} > tmp_t1
 
 mpiexec -n 3 $ISHMEM_BUILD_DIR/../scripts/ishmrun $ISHMEM_BUILD_DIR/test/performance/put_bw -m 4194304 | grep 'test put_bw' | grep 'group<1>' | grep 'threads 16 ' > tmp_1
 cat tmp_1 | awk {'printf("%lf\n", $27)'} > tmp_t16
