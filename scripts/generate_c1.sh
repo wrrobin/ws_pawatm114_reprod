@@ -3,9 +3,13 @@
 # Env variables
 export SHMEM_OFI_DISABLE_MULTIRAIL=1
 export FI_CXI_DEFAULT_CQ_SIZE=131072
-export FI_PROVIDER=cxi
 export FI_CXI_OPTIMIZED_MRS=0
 export EnableImplicitScaling=0
+
+if [ -z "${FI_PROVIDER}" ]; then
+    echo "Setting FI_PROVIDER=cxi"
+    export FI_PROVIDER=cxi
+fi
 
 # Put 
 mpiexec -n 1 $ISHMEM_BUILD_DIR/../scripts/ishmrun $ISHMEM_BUILD_DIR/test/performance/put_bw -t device -m 4194304 | grep 'test put_bw' > tmp_1

@@ -2,9 +2,13 @@
 
 export SHMEM_OFI_DISABLE_MULTIRAIL=1
 export FI_CXI_DEFAULT_CQ_SIZE=131072
-export FI_PROVIDER=cxi
 export FI_CXI_OPTIMIZED_MRS=0
 export EnableImplicitScaling=0
+
+if [ -z "${FI_PROVIDER}" ]; then
+    echo "Setting FI_PROVIDER=cxi"
+    export FI_PROVIDER=cxi
+fi
 
 # Put with cutover never
 # Please build first with the appropriate patch as shown below
